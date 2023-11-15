@@ -79,8 +79,8 @@ const MainBody = () => {
         <ZipLabel>Enter ZipCode:</ZipLabel>
         <div style={{ display: "flex" }}>
           <ClearButton
-            onClick={() => {
-              setAddress({}), setZipCode("");
+            onClick={(e) => {
+              setAddress({}), setZipCode(""), e.preventDefault()
             }}
           >
             <ClearIcon style={{ color: "white" }} />
