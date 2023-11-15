@@ -62,6 +62,7 @@ const ClearButton = styled.button`
 const MainBody = () => {
   const [address, setAddress] = useState();
   const [zipcode, setZipCode] = useState();
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setZipCode(e.target.value);
@@ -69,8 +70,10 @@ const MainBody = () => {
 
   const handleZipSend = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const response = await getAddress(zipcode);
     setAddress(response.data);
+    setLoading(false);
   };
 
   return (
@@ -95,7 +98,7 @@ const MainBody = () => {
           </ZipSend>
         </div>
       </ZipForm>
-      <Address address={address} />
+      <Address address={address} loading={loading} />
     </>
   );
 };
