@@ -59,10 +59,18 @@ const ClearButton = styled.button`
   }
 `;
 
+const ErrorMessage = styled.span`
+  font-size: 1em;
+  color: #fe0000;
+  font-weight: 600;
+  text-align: center;
+`;
+
 const MainBody = () => {
   const [address, setAddress] = useState();
   const [zipcode, setZipCode] = useState();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleInputChange = (e) => {
     setZipCode(e.target.value);
@@ -72,8 +80,17 @@ const MainBody = () => {
     e.preventDefault();
     setLoading(true);
     const response = await getAddress(zipcode);
-    setAddress(response.data);
-    setLoading(false);
+    if (response.status <= 299) {
+      setAddress(response.data);
+      setLoading(false);
+      setError(false);
+    } else {
+      setLoading(false);
+      if (response.status >= 400) {
+        setError(true);
+        setAddress(null)
+      }
+    }
   };
 
   return (
@@ -83,7 +100,10 @@ const MainBody = () => {
         <div style={{ display: "flex" }}>
           <ClearButton
             onClick={(e) => {
-              setAddress({}), setZipCode(""), e.preventDefault()
+              setAddress(null),
+                setZipCode(""),
+                e.preventDefault(),
+                setError(false);
             }}
           >
             <ClearIcon style={{ color: "white" }} />
@@ -98,6 +118,7 @@ const MainBody = () => {
           </ZipSend>
         </div>
       </ZipForm>
+      {error && <ErrorMessage>Incorrect ZipCode!!!</ErrorMessage>}
       <Address address={address} loading={loading} />
     </>
   );
